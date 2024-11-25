@@ -1,5 +1,12 @@
 // 属性编辑侧边栏
-import React, { useRef } from 'react'
+import React, { useRef, useEffect, useState } from 'react'
+
+import { Collapse } from 'antd';
+
+const { Panel } = Collapse
+
+// 基础属性配置
+import Base from './components/Base'
 
 const ProcessPenal = (props) => {
 
@@ -8,7 +15,7 @@ const ProcessPenal = (props) => {
         prefix,
     } = props
 
-    const [activeTab, setActiveTab] = useState("base");
+    const [activeTab, setActiveTab] = useState(["base"]);
     const [elementId, setElementId] = useState("");
     const [elementType, setElementType] = useState("");
     // 元素 businessObject 镜像，提供给需要做判断的组件使用
@@ -23,42 +30,48 @@ const ProcessPenal = (props) => {
     // 构建的bpmn描述对象
     const bpmnInstances = useRef(null);
 
+    // 流程模型数据
+    const [model, setModel] = useState({})
+
+    // 是否可编辑
+    const [idEditDisabled, setIdEditDisabled] = useState(false)
+
     useEffect(() => {
-        setActiveTab("base");
+        setActiveTab(["base"]);
     }, [elementId]);
 
     useEffect(() => {
-        if (props.bpmnModeler != null) {
-                bpmnInstances.current = {
-                modeler: props.bpmnModeler,
-                modeling: props.bpmnModeler.get("modeling"),
-                moddle: props.bpmnModeler.get("moddle"),
-                eventBus: props.bpmnModeler.get("eventBus"),
-                bpmnFactory: props.bpmnModeler.get("bpmnFactory"),
-                elementFactory: props.bpmnModeler.get("elementFactory"),
-                elementRegistry: props.bpmnModeler.get("elementRegistry"),
-                replace: props.bpmnModeler.get("replace"),
-                selection: props.bpmnModeler.get("selection"),
+        if (bpmnModeler != null) {
+            bpmnInstances.current = {
+                modeler: bpmnModeler,
+                modeling: bpmnModeler.get("modeling"),
+                moddle: bpmnModeler.get("moddle"),
+                eventBus: bpmnModeler.get("eventBus"),
+                bpmnFactory: bpmnModeler.get("bpmnFactory"),
+                elementFactory: bpmnModeler.get("elementFactory"),
+                elementRegistry: bpmnModeler.get("elementRegistry"),
+                replace: bpmnModeler.get("replace"),
+                selection: bpmnModeler.get("selection"),
             };
 
             // console.log('bpmnInstances =>', bpmnInstances)
 
             getActiveElement();
         }
-    }, [props.bpmnModeler]);
+    }, [bpmnModeler]);
     
     const getActiveElement = () => {
         // 初始第一个选中元素 bpmn:Process
         initFormOnChanged(null);
-        props.bpmnModeler.on("import.done", (e) => {
+        bpmnModeler.on("import.done", (e) => {
             //   console.log(e, 'eeeee')
             initFormOnChanged(null);
         });
         // 监听选择事件，修改当前激活的元素以及表单
-        props.bpmnModeler.on("selection.changed", ({ newSelection }) => {
+        bpmnModeler.on("selection.changed", ({ newSelection }) => {
             initFormOnChanged(newSelection[0] || null);
         });
-        props.bpmnModeler.on("element.changed", ({ element }) => {
+        bpmnModeler.on("element.changed", ({ element }) => {
             // 保证 修改 "默认流转路径" 类似需要修改多个元素的事件发生的时候，更新表单的元素与原选中元素不一致。
             if (element && element.id === elementId.value) {
                 initFormOnChanged(element);
@@ -104,7 +117,34 @@ const ProcessPenal = (props) => {
     };
 
     return <div>
-        <div>123</div>
+        <Collapse
+            activeKey={activeTab}
+            onChange={val => {
+                setActiveTab(val)
+            }}
+        >
+            <Panel
+                key="base"
+                header="常规"
+            >
+                <Base
+                    idEditDisabled={idEditDisabled}
+                    businessObject={elementBusinessObject}
+                    type={elementType}
+                    // 流程模型数据
+                    model={model}
+                    setModel={setModel}
+                    bpmnInstances={bpmnInstances.current}
+                ></Base>
+            </Panel>
+
+            <Panel
+                key="formConfig"
+                header="表单配置"
+            >
+                <div>123</div>
+            </Panel>
+        </Collapse>
     </div>
 }
 

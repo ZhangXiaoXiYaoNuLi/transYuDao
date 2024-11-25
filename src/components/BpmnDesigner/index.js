@@ -41,10 +41,13 @@ const BpmnDesigner = (props) => {
     const bpmnCanvas = useRef(null)
 
     // 绘制器实例
-    const bpmnModeler = useRef(null)
+    const [bpmnModeler, setBpmnModeler] = useState(null)
 
     // 自定义左侧边栏
     const selfAdditionalModel = useRef([CustomContentPadProvider, CustomPaletteProvider])
+
+    // 只实例化一次
+    const [initFlag, setInitFlag] = useState(false)
 
     useEffect(() => {
         bpmnCanvas.current = document.getElementById('bpmnCanvas')
@@ -52,29 +55,31 @@ const BpmnDesigner = (props) => {
 
     // 挂载元素有了之后，创建绘制器实例
     useEffect(() => {
-        if (bpmnCanvas.current != null) {
+        if (bpmnCanvas.current != null && initFlag === false) {
             let dom = bpmnCanvas.current
             // 实例化 bpmn 绘制器实例
-            bpmnModeler.current = new BpmnModeler({
+            setBpmnModeler(new BpmnModeler({
                 container: dom,
                 keyboard: props.keyboard ? { bindTo: document } : null,
                 additionalModules: additionalModules(),
                 moddleExtensions: moddleExtensions(),
-            })
+            }))
+
+            setInitFlag(true)
         }
-    }, [bpmnCanvas.current])
+    }, [bpmnCanvas.current, initFlag])
 
     // 实例化绘制器后，添加监听器
     useEffect(() => {
-        if (bpmnModeler.current != null) {
-            const EventBus = bpmnModeler.current.get('eventBus')
+        if (bpmnModeler != null) {
+            const EventBus = bpmnModeler.get('eventBus')
             console.log(EventBus, 'EventBus')
             // 监听图形改变返回xml
             EventBus.on('commandStack.changed', async (event) => {
                 try {
-                    recoverable.value = bpmnModeler.current.get('commandStack').canRedo()
-                    revocable.value = bpmnModeler.current.get('commandStack').canUndo()
-                    let { xml } = await bpmnModeler.current.saveXML({ format: true })
+                    recoverable.value = bpmnModeler.get('commandStack').canRedo()
+                    revocable.value = bpmnModeler.get('commandStack').canUndo()
+                    let { xml } = await bpmnModeler.saveXML({ format: true })
                     // 派发
                     props.onChange && props.onChange(xml)
                 } catch (e) {
@@ -86,12 +91,7 @@ const BpmnDesigner = (props) => {
         }
 
         createNewDiagram()
-
-        return () => {
-            // 实例销毁的时候，销毁绘制器
-            bpmnModeler.current = null
-        }
-    }, [bpmnModeler.current])
+    }, [bpmnModeler])
 
     // 绘制（创建）流程图
     const createNewDiagram = async (xml) => {
@@ -101,7 +101,7 @@ const BpmnDesigner = (props) => {
         let newName = props.processName || `业务流程_${new Date().getTime()}`
         let xmlString = xml || DefaultEmptyXML(newId, newName, props.prefix)
         try {
-            let { warnings } = await bpmnModeler.current.importXML(xmlString)
+            let { warnings } = await bpmnModeler.importXML(xmlString)
             console.log(warnings, 'warnings')
             if (warnings && warnings.length) {
                 warnings.forEach((warn) => console.warn(warn))
@@ -190,7 +190,14 @@ const BpmnDesigner = (props) => {
 
     // 保存模型
     const processSave = async () => {
-        const { err, xml } = await bpmnModeler.current.saveXML()
+
+        console.log('bpmnModeler =>', bpmnModeler)
+
+        if (bpmnModeler == null) {
+            return
+        }
+
+        const { err, xml } = await bpmnModeler.saveXML()
         // 读取异常时抛出异常
         if (err) {
             alert('保存模型失败，请重试！')
@@ -234,7 +241,7 @@ const BpmnDesigner = (props) => {
             className="process-panel"
         >
             <ProcessPenal
-                bpmnModeler={bpmnModeler.current}
+                bpmnModeler={bpmnModeler}
                 prefix={props.prefix ? props.prefix : 'activiti'}
             ></ProcessPenal>
         </div>
