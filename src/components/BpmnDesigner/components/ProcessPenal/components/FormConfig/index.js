@@ -3,6 +3,8 @@ import React, { useRef, useEffect, useState } from 'react'
 import axios from '@/utils/request'
 import { Form, Select } from 'antd'
 
+import {mockData} from './mockData'
+
 const FormConfig = (props) => {
 
     const {
@@ -18,20 +20,22 @@ const FormConfig = (props) => {
     const [formOptions, setFormOptions] = useState(null)
 
     useEffect(() => {
-        axios({
-            url: '/admin-api/bpm/form/simple-list',
-        }).then(response => {
-            console.log('response =>', response)
-            let data = response.data.data
-            if (data != null && !!data.length) {
-                setFormOptions(data.map(item => {
-                    return {
-                        label: item.name,
-                        value: item.id,
-                    }
-                }))
-            }
-        })
+        // axios({
+        //     url: '/admin-api/bpm/form/simple-list',
+        // }).then(response => {
+        //     console.log('response =>', response)
+        //     let data = response.data.data
+        //     if (data != null && !!data.length) {
+        //         setFormOptions(data.map(item => {
+        //             return {
+        //                 label: item.name,
+        //                 value: item.id,
+        //             }
+        //         }))
+        //     }
+        // })
+
+        setFormOptions(mockData.map(item => ({label: item.name, value: item.id})))
     }, [])
 
     // 初始回填

@@ -9,6 +9,7 @@ const { Panel } = Collapse
 import Base from './components/Base'
 // 流程表单配置
 import FormConfig from './components/FormConfig'
+import TaskConfig from './components/TaskConfig';
 
 const ProcessPenal = (props) => {
 
@@ -127,6 +128,7 @@ const ProcessPenal = (props) => {
                 setActiveTab(val)
             }}
         >
+            {/* 节点id 和 名称 设置 */}
             <Panel
                 key="base"
                 header="常规"
@@ -139,6 +141,7 @@ const ProcessPenal = (props) => {
                 ></Base>
             </Panel>
 
+            {/* 开始节点，审核节点 表单页面配置 */}
             {
                 !!(elementType === "UserTask" || elementType === "StartEvent") && <Panel
                     key="formConfig"
@@ -151,6 +154,22 @@ const ProcessPenal = (props) => {
                         businessObject={elementBusinessObject}
                         prefix={prefix}
                     ></FormConfig>
+                </Panel>
+            }
+
+            {/* 审批人配置 */}
+            {
+                !!(elementType.indexOf('Task') !== -1) &&<Panel
+                    key="taskConfig"
+                    header="任务（审批人）"
+                >
+                    <TaskConfig
+                        id={elementId}
+                        type={elementType}
+                        bpmnInstances={bpmnInstances.current}
+                        businessObject={elementBusinessObject}
+                        prefix={prefix}
+                    ></TaskConfig>
                 </Panel>
             }
             
