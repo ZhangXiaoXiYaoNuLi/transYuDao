@@ -7,6 +7,8 @@ const { Panel } = Collapse
 
 // 基础属性配置
 import Base from './components/Base'
+// 流程表单配置
+import FormConfig from './components/FormConfig'
 
 const ProcessPenal = (props) => {
 
@@ -112,9 +114,11 @@ const ProcessPenal = (props) => {
                 activatedElement.source.type.indexOf("StartEvent") === -1
             )
         );
-
-        setFormVisible(elementType === "UserTask" || elementType === "StartEvent");
     };
+
+    // useEffect(() => {
+    //     console.log('elementType =>', elementType)
+    // }, [elementType])
 
     return <div>
         <Collapse
@@ -128,22 +132,28 @@ const ProcessPenal = (props) => {
                 header="常规"
             >
                 <Base
-                    idEditDisabled={idEditDisabled}
                     businessObject={elementBusinessObject}
                     type={elementType}
-                    // 流程模型数据
-                    model={model}
-                    setModel={setModel}
+                    elementId={elementId}
                     bpmnInstances={bpmnInstances.current}
                 ></Base>
             </Panel>
 
-            <Panel
-                key="formConfig"
-                header="表单配置"
-            >
-                <div>123</div>
-            </Panel>
+            {
+                !!(elementType === "UserTask" || elementType === "StartEvent") && <Panel
+                    key="formConfig"
+                    header="表单配置"
+                >
+                    <FormConfig
+                        id={elementId}
+                        type={elementType}
+                        bpmnInstances={bpmnInstances.current}
+                        businessObject={elementBusinessObject}
+                        prefix={prefix}
+                    ></FormConfig>
+                </Panel>
+            }
+            
         </Collapse>
     </div>
 }
