@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:flowable="http://flowable.org/bpmn" id="diagram_Process_1732600235201" targetNamespace="http://flowable.org/bpmn">
+	<process id="Process_1732600235201" name="业务流程_1732600235201" isExecutable="true">
+		<startEvent id="Event_0auybk1">
+			<extensionElements>
+				<formData />
+			</extensionElements>
+			<outgoing>
+				Flow_1asotn6
+			</outgoing>
+		</startEvent>
+		<userTask id="Activity_1ry0zzv" flowable:formKey="4" flowable:candidateStrategy="10" flowable:candidateParam="101,1">
+			<extensionElements>
+				<formData />
+			</extensionElements>
+			<incoming>
+				Flow_1asotn6
+			</incoming>
+			<outgoing>
+				Flow_0zqym6n
+			</outgoing>
+			<multiInstanceLoopCharacteristics isSequential="true">
+				<loopCardinality xsi:type="bpmn2:tFormalExpression">
+					1
+				</loopCardinality>
+				<completionCondition xsi:type="bpmn2:tFormalExpression">
+					${ nrOfCompletedInstances &gt;= nrOfInstances }
+				</completionCondition>
+			</multiInstanceLoopCharacteristics>
+		</userTask>
+		<sequenceFlow id="Flow_1asotn6" sourceRef="Event_0auybk1" targetRef="Activity_1ry0zzv" />
+		<endEvent id="Event_0aed6jo">
+			<incoming>
+				Flow_0zqym6n
+			</incoming>
+		</endEvent>
+		<sequenceFlow id="Flow_0zqym6n" sourceRef="Activity_1ry0zzv" targetRef="Event_0aed6jo" />
+	</process>
+	<BPMNDiagram id="BPMNDiagram_1">
+		<BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1732600235201">
+			<BPMNEdge id="Flow_1asotn6_di" bpmnElement="Flow_1asotn6">
+				<waypoint x="268" y="210" />
+				<waypoint x="320" y="210" />
+			</BPMNEdge>
+			<BPMNEdge id="Flow_0zqym6n_di" bpmnElement="Flow_0zqym6n">
+				<waypoint x="420" y="210" />
+				<waypoint x="472" y="210" />
+			</BPMNEdge>
+			<BPMNShape id="Event_0auybk1_di" bpmnElement="Event_0auybk1">
+				<Bounds x="232" y="192" width="36" height="36" />
+			</BPMNShape>
+			<BPMNShape id="Activity_1ry0zzv_di" bpmnElement="Activity_1ry0zzv">
+				<Bounds x="320" y="170" width="100" height="80" />
+			</BPMNShape>
+			<BPMNShape id="Event_0aed6jo_di" bpmnElement="Event_0aed6jo">
+				<Bounds x="472" y="192" width="36" height="36" />
+			</BPMNShape>
+		</BPMNPlane>
+	</BPMNDiagram>
+</definitions>

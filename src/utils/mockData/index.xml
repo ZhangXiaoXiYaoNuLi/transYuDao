@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:activiti="http://activiti.org/bpmn" id="diagram_Process_1732601207980" targetNamespace="http://activiti.org/bpmn">
+	<process id="Process_1732601207980" name="业务流程_1732601207980" isExecutable="true">
+		<startEvent id="Event_0g6e43u">
+			<outgoing>
+				Flow_06vuqaw
+			</outgoing>
+		</startEvent>
+		<userTask id="Activity_0nuz4h5" name="审核节点" activiti:formKey="4" activiti:candidateStrategy="10" activiti:candidateParam="101,1">
+			<extensionElements />
+			<incoming>
+				Flow_06vuqaw
+			</incoming>
+			<outgoing>
+				Flow_0grne03
+			</outgoing>
+			<multiInstanceLoopCharacteristics isSequential="true">
+				<loopCardinality xsi:type="bpmn2:tFormalExpression">
+					1
+				</loopCardinality>
+				<completionCondition xsi:type="bpmn2:tFormalExpression">
+					${ nrOfCompletedInstances &gt;= nrOfInstances }
+				</completionCondition>
+			</multiInstanceLoopCharacteristics>
+		</userTask>
+		<sequenceFlow id="Flow_06vuqaw" sourceRef="Event_0g6e43u" targetRef="Activity_0nuz4h5" />
+		<endEvent id="Event_1tc4dum">
+			<incoming>
+				Flow_0grne03
+			</incoming>
+		</endEvent>
+		<sequenceFlow id="Flow_0grne03" sourceRef="Activity_0nuz4h5" targetRef="Event_1tc4dum" />
+	</process>
+	<BPMNDiagram id="BPMNDiagram_1">
+		<BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1732601207980">
+			<BPMNEdge id="Flow_06vuqaw_di" bpmnElement="Flow_06vuqaw">
+				<waypoint x="228" y="270" />
+				<waypoint x="280" y="270" />
+			</BPMNEdge>
+			<BPMNEdge id="Flow_0grne03_di" bpmnElement="Flow_0grne03">
+				<waypoint x="380" y="270" />
+				<waypoint x="432" y="270" />
+			</BPMNEdge>
+			<BPMNShape id="Event_0g6e43u_di" bpmnElement="Event_0g6e43u">
+				<Bounds x="192" y="252" width="36" height="36" />
+			</BPMNShape>
+			<BPMNShape id="Activity_0nuz4h5_di" bpmnElement="Activity_0nuz4h5">
+				<Bounds x="280" y="230" width="100" height="80" />
+			</BPMNShape>
+			<BPMNShape id="Event_1tc4dum_di" bpmnElement="Event_1tc4dum">
+				<Bounds x="432" y="252" width="36" height="36" />
+			</BPMNShape>
+		</BPMNPlane>
+	</BPMNDiagram>
+</definitions>

@@ -9,7 +9,15 @@ const { Panel } = Collapse
 import Base from './components/Base'
 // 流程表单配置
 import FormConfig from './components/FormConfig'
+// 审核人配置
 import TaskConfig from './components/TaskConfig';
+// 会签配置
+import MultiInstanceConfig from './components/MultiInstanceConfig'
+// 执行监听器
+import Listeners from './components/Listeners'
+// 任务监听器
+import TaskListeners from './components/TaskListeners'
+
 
 const ProcessPenal = (props) => {
 
@@ -127,6 +135,7 @@ const ProcessPenal = (props) => {
             onChange={val => {
                 setActiveTab(val)
             }}
+            accordion={true}
         >
             {/* 节点id 和 名称 设置 */}
             <Panel
@@ -159,7 +168,7 @@ const ProcessPenal = (props) => {
 
             {/* 审批人配置 */}
             {
-                !!(elementType.indexOf('Task') !== -1) &&<Panel
+                !!(elementType.indexOf('Task') !== -1) && <Panel
                     key="taskConfig"
                     header="任务（审批人）"
                 >
@@ -170,6 +179,52 @@ const ProcessPenal = (props) => {
                         businessObject={elementBusinessObject}
                         prefix={prefix}
                     ></TaskConfig>
+                </Panel>
+            }
+
+            {/* 多实例，会签配置 */}
+            {
+                !!(elementType.indexOf('Task') !== -1) && <Panel
+                    key="multiInstanceConfig"
+                    header="多实例（会签配置）"
+                >
+                    <MultiInstanceConfig
+                        id={elementId}
+                        type={elementType}
+                        bpmnInstances={bpmnInstances.current}
+                        businessObject={elementBusinessObject}
+                        prefix={prefix}
+                    ></MultiInstanceConfig>
+                </Panel> 
+            }
+
+            {/* 执行监听器 */}
+            <Panel
+                key="listeners"
+                header="执行监听器"
+            >
+                <Listeners
+                    id={elementId}
+                    type={elementType}
+                    bpmnInstances={bpmnInstances.current}
+                    businessObject={elementBusinessObject}
+                    prefix={prefix}
+                ></Listeners>
+            </Panel>
+
+            {/* 任务监听器 */}
+            {
+                elementType === 'UserTask' && <Panel
+                    key="taskListeners"
+                    header="任务监听器"
+                >
+                    <TaskListeners
+                        id={elementId}
+                        type={elementType}
+                        bpmnInstances={bpmnInstances.current}
+                        businessObject={elementBusinessObject}
+                        prefix={prefix}
+                    ></TaskListeners>
                 </Panel>
             }
             

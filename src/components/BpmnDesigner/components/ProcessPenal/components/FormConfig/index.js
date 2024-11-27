@@ -1,6 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react'
 
-import axios from '@/utils/request'
+// import axios from '@/utils/request'
+
 import { Form, Select } from 'antd'
 
 import {mockData} from './mockData'

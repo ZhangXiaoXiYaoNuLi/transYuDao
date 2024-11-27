@@ -25,6 +25,7 @@ const BpmnDemo = (props) => {
             onChange={val => value.current = val}
             value={value.current}
             save={save}
+            prefix={'activiti'}
         ></BpmnDesigner>
     </div>
 }

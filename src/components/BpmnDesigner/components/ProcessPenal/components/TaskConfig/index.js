@@ -1,6 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react'
 
-import axios from '@/utils/request'
+// import axios from '@/utils/request'
+
 import { Form, Select, Input, TreeSelect } from 'antd'
 
 import {
@@ -18,7 +19,7 @@ import {
 const TaskConfig = (props) => {
 
     const {
-        bpmnInstances
+        bpmnInstances,
     } = props
 
     const formRef = useRef(null)
@@ -176,7 +177,7 @@ const TaskConfig = (props) => {
                         style={{minHeight: '90px'}} 
                         placeholder="请输入表达式"
                         onChange={e => {
-                            updateElementTask(null, [e])
+                            updateElementTask(null, [e.target.value])
                         }}
                     ></Input.TextArea>
                 </Form.Item>
