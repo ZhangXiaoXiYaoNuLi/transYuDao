@@ -146,6 +146,64 @@ const MultiInstanceConfig = (props) => {
         }
     }
 
+    const getElementLoop = (businessObject) => {
+        if (!businessObject.loopCharacteristics) {
+            //   loopCharacteristics.value = 'Null'
+            setLoopCharacteristics('Null')
+            //   loopInstanceForm.value = {}
+            setLoopInstanceForm({})
+            return
+        }
+
+        if (businessObject.loopCharacteristics.$type === 'bpmn:StandardLoopCharacteristics') {
+            // loopCharacteristics.value = 'StandardLoop'
+            setLoopCharacteristics('StandardLoop')
+            // loopInstanceForm.value = {}
+            setLoopInstanceForm({})
+            return
+        }
+
+        if (businessObject.loopCharacteristics.isSequential) {
+            // loopCharacteristics.value = 'SequentialMultiInstance'
+            setLoopCharacteristics('SequentialMultiInstance')
+        } else {
+            // loopCharacteristics.value = 'ParallelMultiInstance'
+            setLoopCharacteristics('ParallelMultiInstance')
+        }
+
+        // 合并配置
+        setLoopInstanceForm({
+            ...defaultLoopInstanceForm.value,
+            ...businessObject.loopCharacteristics,
+            completionCondition: businessObject.loopCharacteristics?.completionCondition?.body ?? '',
+            loopCardinality: businessObject.loopCharacteristics?.loopCardinality?.body ?? ''
+        })
+
+        // 保留当前元素 businessObject 上的 loopCharacteristics 实例
+        multiLoopInstance.current = bpmnInstances.bpmnElement.businessObject.loopCharacteristics
+
+        // 更新表单
+        if (
+          businessObject.loopCharacteristics.extensionElements &&
+          businessObject.loopCharacteristics.extensionElements.values &&
+          businessObject.loopCharacteristics.extensionElements.values.length
+        ) {
+            setLoopInstanceForm(data => {
+                return {
+                    ...data,
+                    timeCycle: businessObject.loopCharacteristics.extensionElements.values[0].body,
+                }
+            })
+        }
+    }
+
+    // 切换节点，初始回填
+    useEffect(() => {
+        if (businessObject != null && id != null) {
+            getElementLoop(businessObject)
+        }
+    }, [businessObject, id])
+
 
     return <>
         <div>

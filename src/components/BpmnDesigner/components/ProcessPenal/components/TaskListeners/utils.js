@@ -16,6 +16,7 @@ export const createListenerObject = (options, isTask, prefix, bpmnInstances) => 
         listenerObj.class = options.class
     }
     // 注入字段
+    debugger
     if (options.fields) {
       listenerObj.fields = options.fields.map((field) => {
         return createFieldObject(field, prefix, bpmnInstances)
@@ -49,6 +50,8 @@ export const createScriptObject = (options, prefix, bpmnInstances) => {
 // 创建 监听器的注入字段 实例
 export function createFieldObject(option, prefix, bpmnInstances) {
 
+    debugger
+
     const { name, fieldType, string, expression } = option
     const fieldConfig = fieldType === 'string' ? { name, string } : { name, expression }
     return bpmnInstances.moddle.create(`${prefix}:Field`, fieldConfig)
@@ -64,7 +67,6 @@ export const updateElementExtensions = (element, extensionList, bpmnInstances) =
   })
 }
  
-
 export default {
     createListenerObject,
     updateElementExtensions,

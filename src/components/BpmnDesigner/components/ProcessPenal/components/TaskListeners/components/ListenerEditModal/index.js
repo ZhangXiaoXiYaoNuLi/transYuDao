@@ -1,27 +1,24 @@
-// 执行监听器编辑弹框
-import { Button, Divider, Form, Input, Modal, Popconfirm, Select, Table } from "antd";
-import React, {useState, useEffect, useRef} from "react";
+import React, { useRef, useEffect, useState } from 'react'
+
+import { Button, Divider, Form, Input, Modal, Popconfirm, Select, Table } from 'antd'
 
 import {
     CopyOutlined,
     PlusOutlined,
 } from '@ant-design/icons'
 
-import {
-    createListenerObject,
-} from './utils'
+import styles from '../../styles.less'
 
-const EditModal = (props) => {
-
-    const formRef = useRef(null)
-
-    const fieldFormRef = useRef(null)
+const ListenerEditModal = (props) => {
 
     const {
-        listenerEventTypeObject,
-        listenerTypeObject,
-        bpmnInstances,
-        prefix,
+        visible,
+        setVisible,
+        fieldsListOfListener,
+        openListenerFieldForm,
+        removeListenerField,
+        listenerFormRef,
+        saveListenerConfig,
     } = props
 
     const [type, setType] = useState(null)
@@ -29,28 +26,8 @@ const EditModal = (props) => {
     // 脚本类型
     const [scriptType, setScriptType] = useState(null)
 
-    const [fieldModalVisible, setFieldModalVisible] = useState(false)
-    const [fieldEditData, setFieldEditData] = useState(null)
-    const [fieldEditIndex, setFieldEditIndex] = useState(null)
-    const [fieldType, setFieldType] = useState(null)
-    const [fieldsListOfListener, setFieldsListOfListener] = useState([])
-    
-    useEffect(() => {
-        if (!!!fieldModalVisible) {
-            setFieldEditData(null)
-            setFieldType(null)
-            setFieldEditIndex(null)
-        }
-    }, [fieldModalVisible])
-
-    useEffect(() => {
-        if (!!fieldModalVisible && !!fieldEditData) {
-            fieldFormRef.current.setFieldsValue({
-                ...fieldEditData,
-            })
-            setFieldType(fieldEditData.fieldType)
-        }
-    }, [fieldModalVisible, fieldEditData])
+    // 表单数据
+    const [listenerForm, setListenerForm] = useState({})
 
     const getLabel = (strType) => {
         const obj = {
@@ -71,38 +48,26 @@ const EditModal = (props) => {
         return obj[strType]
     }
 
-    const handleSubmit = () => {
-
-        // ==========================
-
-        formRef.current.validateFields().then(formData => {
-            const listenerObject = createListenerObject(formData, true, prefix, bpmnInstances)
-            console.log('listenerObject', listenerObject)
-        })
-    }
-
     return <>
         {
-            !!props.visible && <Modal
+            !!visible && <Modal
                 visible={props.visible}
-                title={
-                    !!props.editData ? '编辑' : '新增'
-                }
+                title="任务监听器"
+                width={600}
                 onCancel={() => {
                     props.setVisible && props.setVisible(false)
                 }}
-                width={600}
                 bodyStyle={{
                     padding: '12px'
                 }}
-                okText="保存"
+
                 onOk={() => {
-                    handleSubmit()
+                    saveListenerConfig()
                 }}
             >
                 <div>
                     <Form
-                        ref={formRef}
+                        ref={listenerFormRef}
                     >
                         <Form.Item
                             label="事件类型"
@@ -136,7 +101,7 @@ const EditModal = (props) => {
                                 onChange={val => {
                                     if (val !== 'scriptListener') {
                                         setScriptType(null)
-                                        formRef.current.setFieldsValue({
+                                        listenerFormRef.current.setFieldsValue({
                                             scriptFormat: null,
                                             scriptType: null,
                                             resource: null,
@@ -184,7 +149,7 @@ const EditModal = (props) => {
                                         </Form.Item>
                                         {
                                             scriptType != null && <Form.Item
-                                                label={scriptType === 'inlineScript' ? '脚本内容' : '外部资源'}
+                                                label={scriptType === 'inlineScript' ? '脚本内容' : '资源地址'}
                                                 name={scriptType === 'inlineScript' ? 'value' : 'resource'}
                                                 rules={[{required: true, message: '请输入'}]}
                                             >
@@ -205,7 +170,7 @@ const EditModal = (props) => {
                         }
                     </Form>
                 </div>
-                
+
                 <Divider></Divider>
 
                 <div
@@ -223,12 +188,12 @@ const EditModal = (props) => {
                     <Button 
                         icon={<PlusOutlined />}
                         onClick={() => {
-                            setFieldModalVisible(true)
-                            setFieldEditData(null)
+                            openListenerFieldForm && openListenerFieldForm(null)
                         }}
                     >添加字段</Button>
                 </div>
 
+                {/* 字段展示表格 */}
                 <Table
                     size="small"
                     bordered
@@ -266,92 +231,24 @@ const EditModal = (props) => {
                                 >
                                     <a
                                         onClick={() => {
-                                            setFieldEditIndex(index)
-                                            setFieldEditData(row)
-                                            setFieldModalVisible(true)
+                                            openListenerFieldForm(row, index)
                                         }}
                                     >编辑</a>
                                     <Popconfirm
                                         title="确认删除？"
                                         onConfirm={() => {
-                                            let copyData = fieldsListOfListener.map(i => i)
-                                            copyData.splice(index, 1)
-                                            setFieldsListOfListener(list => copyData)
+                                            removeListenerField(row, index)
                                         }}
                                     ><a>删除</a></Popconfirm>
                                 </div>
                             }
                         }
                     ]}
-                    dataSource={fieldsListOfListener}
+                    dataSource={fieldsListOfListener ? fieldsListOfListener : []}
                 ></Table>
-
-            </Modal>
-        }
-
-        {
-            !!fieldModalVisible && <Modal
-                visible={fieldModalVisible}
-                onCancel={() => setFieldModalVisible(false)}
-                title={!!fieldEditData ? "编辑字段" : '新增字段'}
-                onOk={() => {
-                    fieldFormRef.current.validateFields().then(formData => {
-                        console.log('formData =>', formData)
-                        if (fieldEditIndex != null) {
-                            // debugger
-                            let copyData = fieldsListOfListener.map(i => i)
-                            copyData[fieldEditIndex] = formData
-                            setFieldsListOfListener(data => copyData)
-                        } else {
-                            setFieldsListOfListener(data => {
-                                return [...data, formData]
-                            })
-                        }
-                        
-                        setFieldModalVisible(false)
-                    })
-                }}
-                style={{top: '120px'}}
-                bodyStyle={{padding: '12px'}}
-            >
-                <div>
-                    <Form
-                        ref={fieldFormRef}
-                    >
-                        <Form.Item
-                            label="字段名"
-                            name="name"
-                            rules={[{required: true}]}
-                        >
-                            <Input></Input>
-                        </Form.Item>
-                        <Form.Item
-                            label="字段类型"
-                            name="fieldType"
-                            rules={[{required: true}]}
-                        >
-                            <Select
-                                value={fieldType}
-                                options={[{label: '字符串', value: 'string'}, {label: '表达式', value: 'expression'}]}
-                                onChange={val => {
-                                    setFieldType(val)
-                                }}
-                            ></Select>
-                        </Form.Item>
-                        {
-                            fieldType != null && <Form.Item
-                                label={fieldType === 'string' ? '字符串' : '表达式'}
-                                name={fieldType === 'string' ? 'string' : 'expression'}
-                                rules={[{required: true}]}
-                            >
-                                <Input></Input>
-                            </Form.Item>
-                        }
-                    </Form>
-                </div>
             </Modal>
         }
     </>
 }
 
-export default EditModal
+export default ListenerEditModal

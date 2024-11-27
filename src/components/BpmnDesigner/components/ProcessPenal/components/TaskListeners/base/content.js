@@ -23,21 +23,7 @@ export const listenerType = [
     {value: 'scriptListener', label: '脚本'},
 ]
 
-export const initListenerType = (listener) => {
-    let listenerType
-    if (listener.class) listenerType = 'classListener'
-    if (listener.expression) listenerType = 'expressionListener'
-    if (listener.delegateExpression) listenerType = 'delegateExpressionListener'
-    if (listener.script) listenerType = 'scriptListener'
-    return {
-      ...JSON.parse(JSON.stringify(listener)),
-      ...(listener.script ?? {}),
-      listenerType: listenerType
-    }
-  }
-
 export default {
     eventType,
     listenerType,
-    initListenerType,
 }

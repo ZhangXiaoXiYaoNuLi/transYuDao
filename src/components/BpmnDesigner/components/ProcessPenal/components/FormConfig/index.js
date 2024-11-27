@@ -56,10 +56,10 @@ const FormConfig = (props) => {
     }
 
     useEffect(() => {
-        if (!!id) {
+        if (!!id && businessObject != null) {
             resetFormList()
         }
-    }, [id])
+    }, [id, businessObject])
 
     const updateElementExtensions = (newElExtensionElements) => {
         // 更新到元素上
@@ -82,12 +82,18 @@ const FormConfig = (props) => {
       
         // 更新元素扩展属性，避免后续报错
         updateElementExtensions(elExtensionElements)
+
+        // 更新表单，切换节点的时候，回填
+        formRef.current.setFieldsValue({
+            pageKey: formKey,
+        })
     }
 
     return <>
         <Form ref={formRef}>
             <Form.Item
                 label="流程表单"
+                name="pageKey"
             >
                 <Select
                     onChange={(e) => {

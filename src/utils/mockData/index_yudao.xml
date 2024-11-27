@@ -1,59 +1,58 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:flowable="http://flowable.org/bpmn" id="diagram_Process_1732600235201" targetNamespace="http://flowable.org/bpmn">
-	<process id="Process_1732600235201" name="业务流程_1732600235201" isExecutable="true">
-		<startEvent id="Event_0auybk1">
+<definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:flowable="http://flowable.org/bpmn" id="diagram_Process_1732673491240" targetNamespace="http://flowable.org/bpmn">
+	<process id="Process_1732673491240" name="业务流程_1732673491240" isExecutable="true">
+		<startEvent id="Event_02hjj3x">
 			<extensionElements>
 				<formData />
 			</extensionElements>
 			<outgoing>
-				Flow_1asotn6
+				Flow_09uaigw
 			</outgoing>
 		</startEvent>
-		<userTask id="Activity_1ry0zzv" flowable:formKey="4" flowable:candidateStrategy="10" flowable:candidateParam="101,1">
+		<userTask id="Activity_1h2ky58">
 			<extensionElements>
 				<formData />
+				<taskListener class="Test" event="assignment" id="test">
+					<field name="admin">
+						<string>
+							ABC
+						</string>
+					</field>
+				</taskListener>
 			</extensionElements>
 			<incoming>
-				Flow_1asotn6
+				Flow_09uaigw
 			</incoming>
 			<outgoing>
-				Flow_0zqym6n
+				Flow_1sh4crj
 			</outgoing>
-			<multiInstanceLoopCharacteristics isSequential="true">
-				<loopCardinality xsi:type="bpmn2:tFormalExpression">
-					1
-				</loopCardinality>
-				<completionCondition xsi:type="bpmn2:tFormalExpression">
-					${ nrOfCompletedInstances &gt;= nrOfInstances }
-				</completionCondition>
-			</multiInstanceLoopCharacteristics>
 		</userTask>
-		<sequenceFlow id="Flow_1asotn6" sourceRef="Event_0auybk1" targetRef="Activity_1ry0zzv" />
-		<endEvent id="Event_0aed6jo">
+		<sequenceFlow id="Flow_09uaigw" sourceRef="Event_02hjj3x" targetRef="Activity_1h2ky58" />
+		<endEvent id="Event_0nkefah">
 			<incoming>
-				Flow_0zqym6n
+				Flow_1sh4crj
 			</incoming>
 		</endEvent>
-		<sequenceFlow id="Flow_0zqym6n" sourceRef="Activity_1ry0zzv" targetRef="Event_0aed6jo" />
+		<sequenceFlow id="Flow_1sh4crj" sourceRef="Activity_1h2ky58" targetRef="Event_0nkefah" />
 	</process>
 	<BPMNDiagram id="BPMNDiagram_1">
-		<BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1732600235201">
-			<BPMNEdge id="Flow_1asotn6_di" bpmnElement="Flow_1asotn6">
-				<waypoint x="268" y="210" />
-				<waypoint x="320" y="210" />
+		<BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1732673491240">
+			<BPMNEdge id="Flow_09uaigw_di" bpmnElement="Flow_09uaigw">
+				<waypoint x="238" y="200" />
+				<waypoint x="290" y="200" />
 			</BPMNEdge>
-			<BPMNEdge id="Flow_0zqym6n_di" bpmnElement="Flow_0zqym6n">
-				<waypoint x="420" y="210" />
-				<waypoint x="472" y="210" />
+			<BPMNEdge id="Flow_1sh4crj_di" bpmnElement="Flow_1sh4crj">
+				<waypoint x="390" y="200" />
+				<waypoint x="442" y="200" />
 			</BPMNEdge>
-			<BPMNShape id="Event_0auybk1_di" bpmnElement="Event_0auybk1">
-				<Bounds x="232" y="192" width="36" height="36" />
+			<BPMNShape id="Event_02hjj3x_di" bpmnElement="Event_02hjj3x">
+				<Bounds x="202" y="182" width="36" height="36" />
 			</BPMNShape>
-			<BPMNShape id="Activity_1ry0zzv_di" bpmnElement="Activity_1ry0zzv">
-				<Bounds x="320" y="170" width="100" height="80" />
+			<BPMNShape id="Activity_1h2ky58_di" bpmnElement="Activity_1h2ky58">
+				<Bounds x="290" y="160" width="100" height="80" />
 			</BPMNShape>
-			<BPMNShape id="Event_0aed6jo_di" bpmnElement="Event_0aed6jo">
-				<Bounds x="472" y="192" width="36" height="36" />
+			<BPMNShape id="Event_0nkefah_di" bpmnElement="Event_0nkefah">
+				<Bounds x="442" y="182" width="36" height="36" />
 			</BPMNShape>
 		</BPMNPlane>
 	</BPMNDiagram>

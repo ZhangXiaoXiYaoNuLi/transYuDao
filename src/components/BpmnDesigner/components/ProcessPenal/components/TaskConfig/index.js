@@ -20,6 +20,8 @@ const TaskConfig = (props) => {
 
     const {
         bpmnInstances,
+        id,
+        businessObject,
     } = props
 
     const formRef = useRef(null)
@@ -43,6 +45,43 @@ const TaskConfig = (props) => {
 
     // 用户选项
     const [userOptions, setUserOptions] = useState(users)
+
+    // 初始回填方法
+    const resetTaskForm = () => {
+        if (!businessObject) {
+          return
+        }
+
+        let resCandidateStrategy
+        // 类型回填
+        if (businessObject.candidateStrategy != undefined) {
+            resCandidateStrategy = `${businessObject.candidateStrategy}`
+            setCandidateStrategy(resCandidateStrategy)
+        } else {
+            setCandidateStrategy(null)
+        }
+
+        // 参数值回填
+        if (businessObject.candidateParam != null && resCandidateStrategy != null) {
+          if (resCandidateStrategy == 60) {
+            // 特殊：流程表达式，只有一个 input 输入框
+            setFormItemValue('candidateParam', businessObject.candidateParam)
+          } else {
+            let setValue = businessObject.candidateParam.split(',').map((item) => +item)
+
+            setFormItemValue('candidateParam', setValue)
+          }
+        } else {
+            setFormItemValue('candidateParam', [])
+        }
+    }
+
+    const setFormItemValue = (key, value) => {
+        formRef.current.setFieldsValue({
+            [key]: value
+        })
+    }
+      
 
     // 构造树形选项数据
     useEffect(() => {
@@ -80,6 +119,19 @@ const TaskConfig = (props) => {
         })
     }
 
+    // 节点切换，触发初始回填
+    useEffect(() => {
+        if (
+            id != null && 
+            businessObject != null && 
+            formRef != null && 
+            formRef.current != null &&
+            formRef.current.setFieldsValue != null
+        ) {
+            resetTaskForm()
+        }
+    }, [id, businessObject, formRef])
+
     return <>
         <Form
             ref={formRef}
@@ -112,6 +164,7 @@ const TaskConfig = (props) => {
             {
                 candidateStrategy === '10' && <Form.Item 
                     label="指定角色"
+                    name="candidateParam"
                 >
                     <Select
                         mode="multiple"
@@ -127,6 +180,7 @@ const TaskConfig = (props) => {
             {
                 (candidateStrategy === '20' || candidateStrategy === '21') && <Form.Item 
                     label="指定部门"
+                    name="candidateParam"
                 >
                     <TreeSelect
                         treeData={deptTreeOptions} 
@@ -143,6 +197,7 @@ const TaskConfig = (props) => {
             {
                 (candidateStrategy === '22') && <Form.Item 
                     label="指定岗位"
+                    name="candidateParam"
                 >
                     <Select 
                         mode="multiple"
@@ -158,6 +213,7 @@ const TaskConfig = (props) => {
             {
                 (candidateStrategy === '30') && <Form.Item 
                     label="指定用户"
+                    name="candidateParam"
                 >
                     <Select 
                         mode="multiple"
@@ -172,7 +228,9 @@ const TaskConfig = (props) => {
 
             {/* 流程表达式 */}
             {
-                (candidateStrategy === '60') && <Form.Item>
+                (candidateStrategy === '60') && <Form.Item
+                    name="candidateParam"
+                >
                     <Input.TextArea 
                         style={{minHeight: '90px'}} 
                         placeholder="请输入表达式"

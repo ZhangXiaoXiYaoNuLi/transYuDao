@@ -1,7 +1,7 @@
 // 属性编辑侧边栏
 import React, { useRef, useEffect, useState } from 'react'
 
-import { Collapse } from 'antd';
+import { Collapse, Spin } from 'antd';
 
 const { Panel } = Collapse
 
@@ -18,6 +18,16 @@ import Listeners from './components/Listeners'
 // 任务监听器
 import TaskListeners from './components/TaskListeners'
 
+const loadingArea = () => {
+    return <div
+        style={{
+            height: '160px',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center'
+        }}
+    ><Spin spinning={true}></Spin></div>
+}
 
 const ProcessPenal = (props) => {
 
@@ -47,9 +57,31 @@ const ProcessPenal = (props) => {
     // 是否可编辑
     const [idEditDisabled, setIdEditDisabled] = useState(false)
 
+    const [refreshFlag, setRefreshFlag] = useState(false)
+    
     useEffect(() => {
-        setActiveTab(["base"]);
-    }, [elementId]);
+        if (!!refreshFlag) {
+            setTimeout(() => {
+                setRefreshFlag(false)
+            }, 160)
+        }
+    }, [refreshFlag])
+
+    useEffect(() => {
+        if (elementId != null && elementType != null) {
+            // 切换节点获取默认展开 panel
+            let resArr = ["base"]
+            // 如果是开始审核节点，默认展开 表单配置
+            if (elementType === "UserTask" || elementType === "StartEvent") {
+                resArr.push('formConfig')
+            }
+            // 如果是审核节点，默认展开审核人配置
+            if (elementType.indexOf('Task') !== -1) {
+                resArr.push('taskConfig')
+            }
+            setActiveTab(resArr);
+        }
+    }, [elementId, elementType]);
 
     useEffect(() => {
         if (bpmnModeler != null) {
@@ -125,17 +157,13 @@ const ProcessPenal = (props) => {
         );
     };
 
-    // useEffect(() => {
-    //     console.log('elementType =>', elementType)
-    // }, [elementType])
-
     return <div>
         <Collapse
             activeKey={activeTab}
             onChange={val => {
                 setActiveTab(val)
             }}
-            accordion={true}
+            // accordion={true}
         >
             {/* 节点id 和 名称 设置 */}
             <Panel
@@ -184,19 +212,26 @@ const ProcessPenal = (props) => {
 
             {/* 多实例，会签配置 */}
             {
-                !!(elementType.indexOf('Task') !== -1) && <Panel
-                    key="multiInstanceConfig"
-                    header="多实例（会签配置）"
-                >
-                    <MultiInstanceConfig
-                        id={elementId}
-                        type={elementType}
-                        bpmnInstances={bpmnInstances.current}
-                        businessObject={elementBusinessObject}
-                        prefix={prefix}
-                    ></MultiInstanceConfig>
-                </Panel> 
+                !!refreshFlag ? <>
+                    {loadingArea()}
+                </> : <>
+                    {
+                        !!(elementType.indexOf('Task') !== -1) && <Panel
+                            key="multiInstanceConfig"
+                            header="多实例（会签配置）"
+                        >
+                            <MultiInstanceConfig
+                                id={elementId}
+                                type={elementType}
+                                bpmnInstances={bpmnInstances.current}
+                                businessObject={elementBusinessObject}
+                                prefix={prefix}
+                            ></MultiInstanceConfig>
+                        </Panel> 
+                    }
+                </>
             }
+            
 
             {/* 执行监听器 */}
             <Panel
