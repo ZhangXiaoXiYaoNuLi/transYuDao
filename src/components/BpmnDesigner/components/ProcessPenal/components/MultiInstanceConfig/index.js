@@ -181,20 +181,6 @@ const MultiInstanceConfig = (props) => {
 
         // 保留当前元素 businessObject 上的 loopCharacteristics 实例
         multiLoopInstance.current = bpmnInstances.bpmnElement.businessObject.loopCharacteristics
-
-        // 更新表单
-        if (
-          businessObject.loopCharacteristics.extensionElements &&
-          businessObject.loopCharacteristics.extensionElements.values &&
-          businessObject.loopCharacteristics.extensionElements.values.length
-        ) {
-            setLoopInstanceForm(data => {
-                return {
-                    ...data,
-                    timeCycle: businessObject.loopCharacteristics.extensionElements.values[0].body,
-                }
-            })
-        }
     }
 
     // 切换节点，初始回填

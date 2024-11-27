@@ -41,8 +41,14 @@ const TaskListeners = (props) => {
     // 监听器表单实例
     const listenerFormRef = useRef(null)
 
+    // 监听器编辑组件实例
+    const ListenerEditModalRef = useRef(null)
+
     // 字段表单实例
     const listenerFieldFormRef = useRef(null)
+
+    // 字段编辑组件实例
+    const FieldEditModalRef = useRef(null)
 
     // 已添加监听器表格数据
     const [elementListenersList, setElementListenersList] = useState([])
@@ -136,10 +142,13 @@ const TaskListeners = (props) => {
         // 打开侧边栏
         setListenerFormModelVisible(true)
 
+        console.log('回填表单 =>', resListenerForm)
+
         // 设置表单
         setTimeout(() => {
             listenerFormRef.current.setFieldsValue(resListenerForm)
-        }, 500)
+            ListenerEditModalRef.current.setType(resListenerForm.listenerType ? resListenerForm.listenerType : null)
+        }, 300)
     }
 
     // 点击删除，移除监听器
@@ -169,7 +178,11 @@ const TaskListeners = (props) => {
 
             setListenerForm(formData)
 
+            console.log('formData =>', formData)
+
             const listenerObject = createListenerObject(formData, true, prefix, bpmnInstances)
+
+            debugger
 
             let resBpmnElementListeners = [...bpmnElementListeners]
             let resElementListenersList = [...elementListenersList]
@@ -208,6 +221,7 @@ const TaskListeners = (props) => {
             listenerFieldFormRef.current.setFieldsValue({
                 ...resListenerFieldForm,
             })
+            FieldEditModalRef.current.setFieldType(resListenerFieldForm.fieldType)
         }, 300)
 
         setEditingListenerFieldIndex(field ? index : -1)
@@ -284,6 +298,8 @@ const TaskListeners = (props) => {
         {/* 监听器编辑弹框部分 */}
         {
             !!listenerFormModelVisible && <ListenerEditModal
+                ref={ListenerEditModalRef}
+
                 listenerFormRef={listenerFormRef}
 
                 visible={listenerFormModelVisible}
@@ -307,6 +323,8 @@ const TaskListeners = (props) => {
         {/* 字段编辑弹框部分 */}
         {
             !!listenerFieldFormModelVisible && <FieldEditModal
+                ref={FieldEditModalRef}
+
                 listenerFieldFormRef={listenerFieldFormRef}
 
                 visible={listenerFieldFormModelVisible}

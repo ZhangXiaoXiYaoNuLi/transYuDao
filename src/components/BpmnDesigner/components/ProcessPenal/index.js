@@ -234,7 +234,8 @@ const ProcessPenal = (props) => {
             
 
             {/* 执行监听器 */}
-            <Panel
+            {/* 后面再加 */}
+            {/* <Panel
                 key="listeners"
                 header="执行监听器"
             >
@@ -245,7 +246,7 @@ const ProcessPenal = (props) => {
                     businessObject={elementBusinessObject}
                     prefix={prefix}
                 ></Listeners>
-            </Panel>
+            </Panel> */}
 
             {/* 任务监听器 */}
             {

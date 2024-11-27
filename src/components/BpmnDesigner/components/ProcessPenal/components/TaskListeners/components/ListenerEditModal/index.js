@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from 'react'
+import React, { useRef, useEffect, useState, useImperativeHandle } from 'react'
 
 import { Button, Divider, Form, Input, Modal, Popconfirm, Select, Table } from 'antd'
 
@@ -9,7 +9,13 @@ import {
 
 import styles from '../../styles.less'
 
-const ListenerEditModal = (props) => {
+const ListenerEditModal = React.forwardRef((props, ref) => {
+
+    useImperativeHandle(ref, () => {
+        return {
+            setType: (val) => setType(val),
+        }
+    })
 
     const {
         visible,
@@ -221,7 +227,7 @@ const ListenerEditModal = (props) => {
                         {
                             title: '操作',
                             dataIndex: 'name',
-                            width: 82,
+                            width: 92,
                             render: (val, row, index) => {
                                 return <div
                                     style={{
@@ -249,6 +255,6 @@ const ListenerEditModal = (props) => {
             </Modal>
         }
     </>
-}
+})
 
 export default ListenerEditModal

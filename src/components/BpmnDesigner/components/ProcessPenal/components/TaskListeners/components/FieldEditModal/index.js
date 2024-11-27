@@ -1,8 +1,14 @@
-import React, { useRef, useEffect, useState } from 'react'
+import React, { useRef, useEffect, useState, useImperativeHandle } from 'react'
 
 import { Button, Divider, Form, Input, Modal, Popconfirm, Select, Table } from "antd";
 
-const FieldEditModal = (props) => {
+const FieldEditModal = React.forwardRef((props, ref) => {
+
+    useImperativeHandle(ref, () => {
+        return {
+            setFieldType: (val) => setFieldType(val),
+        }
+    })
 
     const {
         visible,
@@ -61,6 +67,6 @@ const FieldEditModal = (props) => {
             </Modal>
         }
     </>
-}
+})
 
 export default FieldEditModal

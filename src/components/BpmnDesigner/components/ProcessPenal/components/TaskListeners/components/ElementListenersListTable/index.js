@@ -68,6 +68,7 @@ const ElementListenersListTable = (props) => {
                 return <div
                     style={{
                         display: 'flex',
+                        justifyContent: 'space-between'
                     }}
                 >
                     <a onClick={() => clickEdit(row, index)}>编辑</a>
