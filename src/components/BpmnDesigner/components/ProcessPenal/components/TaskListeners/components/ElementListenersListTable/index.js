@@ -48,7 +48,7 @@ const ElementListenersListTable = (props) => {
         },
         {
             title: '事件id',
-            dataIndex: 'id',
+            dataIndex: 'listenerId',
             ellipsis: true,
         },
         {

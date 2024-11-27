@@ -793,6 +793,10 @@
           "type": "Script"
         },
         {
+          "name": "listenerId",
+          "type": "String"
+        },
+        {
           "name": "fields",
           "type": "Field",
           "isMany": true

@@ -93,7 +93,7 @@ const ListenerEditModal = React.forwardRef((props, ref) => {
                         <Form.Item
                             label="监听器 ID"
                             rules={[{required: true, message: '请输入 id'}]}
-                            name={'id'}
+                            name={'listenerId'}
                         >
                             <Input></Input>
                         </Form.Item>

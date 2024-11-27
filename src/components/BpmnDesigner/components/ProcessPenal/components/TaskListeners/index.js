@@ -182,8 +182,6 @@ const TaskListeners = (props) => {
 
             const listenerObject = createListenerObject(formData, true, prefix, bpmnInstances)
 
-            debugger
-
             let resBpmnElementListeners = [...bpmnElementListeners]
             let resElementListenersList = [...elementListenersList]
             if (editingListenerIndex.value === -1) {
