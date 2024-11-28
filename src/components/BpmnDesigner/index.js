@@ -36,6 +36,10 @@ import ProcessPenal from './components/ProcessPenal'
 
 import { Button } from 'antd'
 
+import {
+    download
+} from '@/utils/download'
+
 const BpmnDesigner = (props) => {
 
     const bpmnCanvas = useRef(null)
@@ -205,6 +209,31 @@ const BpmnDesigner = (props) => {
         }
         props.save && props.save(xml)
     }
+
+    // bpmn 下载按钮
+    const onDownloadXml = async () => {
+        if (bpmnModeler == null) {
+            return
+        }
+
+        bpmnModeler.saveXML({ format: true }, (err, data) => {
+            download('xml', data);
+        });
+    }
+
+    // 测试导入 bpmn 编辑回填
+    const onImportXml = async () => {
+        try {
+            let localXmlString = localStorage.getItem('test_xml')
+            let { warnings } = await bpmnModeler.importXML(localXmlString)
+            console.log(warnings, 'warnings')
+            if (warnings && warnings.length) {
+                warnings.forEach((warn) => console.warn(warn))
+            }
+        } catch (e) {
+            console.error(`[Process Designer Warn]: ${e.message || e}`)
+        }
+    }
  
     return <div
         className="my-process-designer"
@@ -226,14 +255,29 @@ const BpmnDesigner = (props) => {
                 position: 'absolute',
                 bottom: '24px',
                 left: '24px',
+                display: 'flex',
             }}
         >
-            <Button
-                type='primary'
-                onClick={() => processSave()}
-            >
-                保存模型
-            </Button>
+            <div>
+                <Button
+                    type='primary'
+                    onClick={() => processSave()}
+                >
+                    保存模型
+                </Button>
+            </div>
+            <div style={{paddingLeft: '12px'}}>
+                <Button
+                    type="primary"
+                    onClick={() => {onDownloadXml()}}
+                >下载 BPMN</Button>
+            </div>
+            <div style={{paddingLeft: '12px'}}>
+                <Button
+                    type="primary"
+                    onClick={() => {onImportXml()}}
+                >导入 XML</Button>
+            </div>
         </div>
 
         {/* 侧边属性配置栏 */}

@@ -87,9 +87,8 @@ const TaskListeners = (props) => {
         )
 
         setOtherExtensionList([])
-
         
-        let resBpmnElementListeners = bpmnInstances.bpmnElement.businessObject?.extensionElements?.values.filter(
+        let resBpmnElementListeners = bpmnInstances.bpmnElement.businessObject?.extensionElements?.values?.filter(
             (ex) => ex.$type === `${prefix}:TaskListener`
           ) ?? []
 

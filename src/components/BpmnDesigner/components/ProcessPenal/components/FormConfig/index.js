@@ -71,7 +71,7 @@ const FormConfig = (props) => {
     const resetFormList = () => {
         let formKey = businessObject.formKey
         if (formKey?.length > 0) {
-            formKey = parseInt(formKey.value)
+            formKey = parseInt(formKey)
         }
         // 获取元素扩展属性 或者 创建扩展属性
         let elExtensionElements =
@@ -84,6 +84,7 @@ const FormConfig = (props) => {
         updateElementExtensions(elExtensionElements)
 
         // 更新表单，切换节点的时候，回填
+        console.log('回填表单 =>', formKey)
         formRef.current.setFieldsValue({
             pageKey: formKey,
         })

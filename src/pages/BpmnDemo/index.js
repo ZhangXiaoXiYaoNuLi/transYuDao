@@ -8,8 +8,13 @@ const BpmnDemo = (props) => {
 
     const value = useRef(null)
 
+
+
     const save = (xml) => {
         console.log('输出 xml =>', xml)
+
+        // 写缓存，用于测试流程图回填
+        localStorage.setItem('test_xml', xml)
 
         let parser = new xml2js.Parser();
         parser.parseString(xml, (err, res) => {
