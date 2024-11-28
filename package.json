@@ -23,6 +23,7 @@
     "min-dash": "^4.1.1",
     "sass": "^1.81.0",
     "steady-xml": "^0.1.0",
+    "use-deep-compare-effect": "^1.8.1",
     "xml2js": "^0.6.2"
   },
   "devDependencies": {

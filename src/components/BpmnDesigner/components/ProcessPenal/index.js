@@ -17,6 +17,8 @@ import MultiInstanceConfig from './components/MultiInstanceConfig'
 import Listeners from './components/Listeners'
 // 任务监听器
 import TaskListeners from './components/TaskListeners'
+// 流转条件
+import FlowCondition from './components/FlowCondition'
 
 const loadingArea = () => {
     return <div
@@ -68,7 +70,7 @@ const ProcessPenal = (props) => {
     }, [refreshFlag])
 
     useEffect(() => {
-        if (elementId != null && elementType != null) {
+        if (elementId != null && elementType != null && bpmnElement != null) {
             // 切换节点获取默认展开 panel
             let resArr = ["base"]
             // 如果是开始审核节点，默认展开 表单配置
@@ -79,9 +81,20 @@ const ProcessPenal = (props) => {
             if (elementType.indexOf('Task') !== -1) {
                 resArr.push('taskConfig')
             }
+
+            // 如果是路径节点，默认展开流转条件
+            if ((
+                elementType === 'SequenceFlow' &&
+                bpmnElement &&
+                bpmnElement.source &&
+                bpmnElement.source.type.indexOf('StartEvent') === -1
+            )) {
+                resArr.push('condition')
+            }
+
             setActiveTab(resArr);
         }
-    }, [elementId, elementType]);
+    }, [elementId, elementType, bpmnElement]);
 
     useEffect(() => {
         if (bpmnModeler != null) {
@@ -177,6 +190,27 @@ const ProcessPenal = (props) => {
                     bpmnInstances={bpmnInstances.current}
                 ></Base>
             </Panel>
+
+            {/* 流转条件 */}
+            {
+                !!(
+                    elementType === 'SequenceFlow' &&
+                    bpmnElement &&
+                    bpmnElement.source &&
+                    bpmnElement.source.type.indexOf('StartEvent') === -1
+                ) && <Panel
+                    key="condition"
+                    header="流转条件"
+                >
+                    <FlowCondition
+                        id={elementId}
+                        type={elementType}
+                        bpmnInstances={bpmnInstances.current}
+                        businessObject={elementBusinessObject}
+                        prefix={prefix}
+                    ></FlowCondition>
+                </Panel>
+            }
 
             {/* 开始节点，审核节点 表单页面配置 */}
             {
