@@ -20,8 +20,6 @@ const FlowCondition = (props) => {
 
     const [bpmnElementSourceRef, setBpmnElementSourceRef] = useState(null)
 
-    const [flowConditionRef, setFlowConditionRef] = useState(null)
-
     useDeepCompareEffect(() => {
         console.log('flowConditionForm => ', flowConditionForm)
     }, [flowConditionForm])
@@ -31,7 +29,6 @@ const FlowCondition = (props) => {
         // 正常条件类
         if (flowType === 'condition') {
             let resFlowConditionRef = bpmnInstances.moddle.create('bpmn:FormalExpression')
-            setFlowConditionRef(resFlowConditionRef)
             bpmnInstances.modeling.updateProperties(bpmnInstances.bpmnElement, {
                 conditionExpression: resFlowConditionRef
             })
@@ -70,20 +67,20 @@ const FlowCondition = (props) => {
         console.log('language =>', language)
         let condition
         if (conditionType === 'expression') {
-        condition = bpmnInstances.moddle.create('bpmn:FormalExpression', { body })
+            condition = bpmnInstances.moddle.create('bpmn:FormalExpression', { body })
         } else {
-        if (scriptType === 'inlineScript') {
-            condition = bpmnInstances.moddle.create('bpmn:FormalExpression', { body, language })
-            // flowConditionForm.value['resource'] = ''
-            updateFormValue('resource', '', newFlowConditionForm)
-        } else {
-            // flowConditionForm.value['body'] = ''
-            updateFormValue('body', '', newFlowConditionForm)
-            condition = bpmnInstances.moddle.create('bpmn:FormalExpression', {
-            resource,
-            language
-            })
-        }
+            if (scriptType === 'inlineScript') {
+                condition = bpmnInstances.moddle.create('bpmn:FormalExpression', { body, language })
+                // flowConditionForm.value['resource'] = ''
+                updateFormValue('resource', '', newFlowConditionForm)
+            } else {
+                // flowConditionForm.value['body'] = ''
+                updateFormValue('body', '', newFlowConditionForm)
+                condition = bpmnInstances.moddle.create('bpmn:FormalExpression', {
+                resource,
+                language
+                })
+            }
         }
 
         // console.log('condition =>', condition)
